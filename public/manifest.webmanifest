@@ -1,0 +1,14 @@
+{
+  "name": "BM Food Delivery",
+  "short_name": "BM Food Delivery",
+  "description": "Good food, fast delivery from verified kitchens across Dhaka.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b0e11",
+  "theme_color": "#ff5a1f",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/bm-food-delivery-logo.png", "sizes": "1254x1254", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

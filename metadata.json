@@ -1,0 +1,6 @@
+{
+  "name": "BM Food",
+  "description": "Full-stack commercial food delivery platform with customer ordering, admin dashboard, restaurant management, rider portal, manual and API gateway payments, and real-time Firestore synchronization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

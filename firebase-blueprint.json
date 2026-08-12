@@ -1,0 +1,267 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "System user document storing profile details and role",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["customer", "admin", "restaurant", "rider", "support"] },
+        "status": { "type": "string", "enum": ["active", "suspended"] },
+        "walletBalance": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "name", "email", "role", "status"]
+    },
+    "Address": {
+      "title": "Delivery Address",
+      "description": "Saved customer address",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "area": { "type": "string" },
+        "isDefault": { "type": "boolean" }
+      },
+      "required": ["id", "name", "phone", "address", "city"]
+    },
+    "Restaurant": {
+      "title": "Restaurant",
+      "description": "Food vendor vendor entity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 120 },
+        "slug": { "type": "string" },
+        "description": { "type": "string", "maxLength": 1000 },
+        "logoUrl": { "type": "string" },
+        "coverImageUrl": { "type": "string" },
+        "cuisineTypes": { "type": "array" },
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "deliveryFee": { "type": "number" },
+        "minimumOrder": { "type": "number" },
+        "estimatedDeliveryTime": { "type": "number" },
+        "isOpen": { "type": "boolean" },
+        "isFeatured": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["active", "inactive", "pending"] }
+      },
+      "required": ["id", "name", "logoUrl", "coverImageUrl", "address", "phone"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Food category classification",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "description": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "sortOrder": { "type": "number" }
+      },
+      "required": ["id", "name", "imageUrl", "isActive"]
+    },
+    "Food": {
+      "title": "Food Item",
+      "description": "Menu food item entity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 120 },
+        "slug": { "type": "string" },
+        "description": { "type": "string", "maxLength": 500 },
+        "price": { "type": "number" },
+        "discountPrice": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "categoryId": { "type": "string" },
+        "restaurantId": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "preparationTime": { "type": "number" },
+        "isAvailable": { "type": "boolean" },
+        "isFeatured": { "type": "boolean" },
+        "tags": { "type": "array" }
+      },
+      "required": ["id", "name", "price", "imageUrl", "restaurantId", "categoryId"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer food order transaction",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "userPhone": { "type": "string" },
+        "restaurantId": { "type": "string" },
+        "restaurantName": { "type": "string" },
+        "subtotal": { "type": "number" },
+        "deliveryFee": { "type": "number" },
+        "discount": { "type": "number" },
+        "tax": { "type": "number" },
+        "total": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "paymentStatus": { "type": "string", "enum": ["pending", "paid", "failed", "refunded", "manual_pending"] },
+        "orderStatus": { "type": "string", "enum": ["pending", "confirmed", "preparing", "ready", "picked_up", "on_the_way", "delivered", "cancelled", "refunded"] },
+        "riderId": { "type": "string" },
+        "transactionId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "restaurantId", "total", "paymentMethod", "orderStatus", "paymentStatus"]
+    },
+    "Coupon": {
+      "title": "Coupon",
+      "description": "Discount coupon code definition",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string", "maxLength": 30 },
+        "discountType": { "type": "string", "enum": ["percentage", "fixed"] },
+        "discountValue": { "type": "number" },
+        "minimumOrder": { "type": "number" },
+        "maximumDiscount": { "type": "number" },
+        "usageLimit": { "type": "number" },
+        "usedCount": { "type": "number" },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["id", "code", "discountType", "discountValue", "minimumOrder", "isActive"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Customer feedback and rating",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string", "maxLength": 500 },
+        "restaurantId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "orderId": { "type": "string" }
+      },
+      "required": ["id", "rating", "restaurantId", "userId", "comment"]
+    },
+    "AppNotification": {
+      "title": "Notification",
+      "description": "In-app system notification",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "isRead": { "type": "boolean" }
+      },
+      "required": ["id", "userId", "title", "message", "isRead"]
+    },
+    "Payment": {
+      "title": "Payment Transaction",
+      "description": "Processed payment gateway transaction audit record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "orderId": { "type": "string" },
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "transactionId": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "orderId", "userId", "amount", "paymentMethod", "status"]
+    },
+    "Banner": {
+      "title": "Banner",
+      "description": "Homepage promotional banner",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["id", "title", "imageUrl", "isActive"]
+    },
+    "SystemSettings": {
+      "title": "System Settings",
+      "description": "Global platform parameters",
+      "type": "object",
+      "properties": {
+        "businessName": { "type": "string" },
+        "contactPhone": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "currency": { "type": "string" },
+        "taxPercentage": { "type": "number" },
+        "defaultDeliveryFee": { "type": "number" },
+        "minimumOrder": { "type": "number" }
+      },
+      "required": ["businessName", "contactEmail", "currency"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile collection"
+    },
+    "/users/{userId}/addresses/{addressId}": {
+      "schema": "Address",
+      "description": "User saved addresses"
+    },
+    "/restaurants/{restaurantId}": {
+      "schema": "Restaurant",
+      "description": "Food vendor collection"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Food categories collection"
+    },
+    "/foods/{foodId}": {
+      "schema": "Food",
+      "description": "Food menu items collection"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Food orders collection"
+    },
+    "/coupons/{couponId}": {
+      "schema": "Coupon",
+      "description": "Discount promotional coupons collection"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Customer reviews collection"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "AppNotification",
+      "description": "In-app notifications collection"
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "Payment transactions collection"
+    },
+    "/banners/{bannerId}": {
+      "schema": "Banner",
+      "description": "Homepage banners collection"
+    },
+    "/settings/{settingId}": {
+      "schema": "SystemSettings",
+      "description": "Global application configuration settings"
+    }
+  }
+}

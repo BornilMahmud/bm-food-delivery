@@ -1,0 +1,209 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function userExists() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function profile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return userExists() && profile().role == 'admin' && profile().status == 'active';
+    }
+
+    function isRestaurantOwner(restaurantId) {
+      return isAdmin() || (userExists()
+        && profile().role == 'restaurant'
+        && profile().status == 'active'
+        && profile().restaurantId == restaurantId);
+    }
+
+    function isRider() {
+      return userExists() && profile().role == 'rider' && profile().status == 'active';
+    }
+
+    function isAssignedRider(orderData) {
+      return isRider() && orderData.riderId == request.auth.uid;
+    }
+
+    match /users/{userId} {
+      allow read: if isSelf(userId) || isAdmin();
+      allow create: if isSelf(userId)
+        && request.resource.data.uid == userId
+        && request.resource.data.role == 'customer'
+        && request.resource.data.status == 'active';
+      allow update: if isAdmin()
+        || (isSelf(userId)
+          && request.resource.data.uid == resource.data.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'name', 'email', 'phone', 'photoURL', 'addresses', 'favorites', 'updatedAt'
+          ]));
+      allow delete: if isAdmin();
+
+      match /addresses/{addressId} {
+        allow read, write: if isSelf(userId) || isAdmin();
+      }
+
+      match /favorites/{favoriteId} {
+        allow read, write: if isSelf(userId) || isAdmin();
+      }
+    }
+
+    match /restaurants/{restaurantId} {
+      allow read: if (resource.data.status == 'active') || isAdmin() || isRestaurantOwner(restaurantId);
+      allow create: if isAdmin();
+      allow update: if isAdmin() || isRestaurantOwner(restaurantId);
+      allow delete: if isAdmin();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if resource.data.isActive == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /foods/{foodId} {
+      allow read: if resource.data.isAvailable == true || isAdmin() || isRestaurantOwner(resource.data.restaurantId);
+      allow create: if isAdmin() || isRestaurantOwner(request.resource.data.restaurantId);
+      allow update: if isAdmin()
+        || (isRestaurantOwner(resource.data.restaurantId)
+          && request.resource.data.restaurantId == resource.data.restaurantId);
+      allow delete: if isAdmin() || isRestaurantOwner(resource.data.restaurantId);
+    }
+
+    match /orders/{orderId} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.userId == request.auth.uid)
+        || isRestaurantOwner(resource.data.restaurantId)
+        || isAssignedRider(resource.data);
+
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.orderStatus == 'pending'
+        && request.resource.data.paymentStatus in ['pending', 'manual_pending']
+        && request.resource.data.riderId == null
+        && request.resource.data.items.size() > 0
+        && request.resource.data.total >= 0;
+
+      allow update: if isAdmin()
+        || (isRestaurantOwner(resource.data.restaurantId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['orderStatus', 'updatedAt']))
+        || (isAssignedRider(resource.data)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['orderStatus', 'updatedAt'])
+          && request.resource.data.paymentStatus == resource.data.paymentStatus);
+
+      allow delete: if isAdmin();
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if resource.data.isVisible == true || isAdmin();
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && exists(/databases/$(database)/documents/orders/$(request.resource.data.orderId))
+        && get(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.userId == request.auth.uid
+        && get(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.orderStatus == 'delivered'
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5;
+      allow update, delete: if isAdmin()
+        || (signedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    match /coupons/{couponId} {
+      allow read: if resource.data.isActive == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /paymentMethods/{methodId} {
+      allow read: if resource.data.isEnabled == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /payments/{paymentId} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.userId == request.auth.uid);
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.userId == request.auth.uid
+        && request.resource.data.status in ['pending', 'manual_pending'];
+      allow update, delete: if isAdmin();
+    }
+
+    match /riders/{riderId} {
+      allow read: if isAdmin() || isSelf(riderId);
+      allow create: if isAdmin() || (isSelf(riderId) && request.resource.data.id == riderId);
+      allow update: if isAdmin() || (isSelf(riderId) && request.resource.data.id == resource.data.id);
+      allow delete: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isAdmin() || (signedIn() && (resource.data.userId == request.auth.uid || resource.data.userId == 'all'));
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /banners/{bannerId} {
+      allow read: if resource.data.isActive == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /homepageCollections/{collectionId} {
+      allow read: if resource.data.isActive == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /favorites/{favoriteId} {
+      allow read, delete: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isAdmin() || (signedIn() && request.resource.data.userId == request.auth.uid);
+      allow update: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid);
+    }
+
+    match /addresses/{addressId} {
+      allow read, delete: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isAdmin() || (signedIn() && request.resource.data.userId == request.auth.uid);
+      allow update: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid);
+    }
+
+    match /rewardTransactions/{transactionId} {
+      allow read: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /restaurantPayouts/{payoutId} {
+      allow read: if isAdmin() || (signedIn() && isRestaurantOwner(resource.data.restaurantId));
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /auditLogs/{logId} {
+      allow read, create: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /supportTickets/{ticketId} {
+      allow read: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    match /adminLogs/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
