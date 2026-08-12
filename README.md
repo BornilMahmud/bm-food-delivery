@@ -6,7 +6,7 @@ BM Food is a premium food-delivery platform for Bangladesh built with React 19, 
 
 The Firebase project is **`bm-food-d04b1`**. The temporary verified preview is available at:
 
-[https://3000-i9idh7dduywboew59nlx4-f3f3a7a6.us2.manus.computer](https://3000-i9idh7dduywboew59nlx4-f3f3a7a6.us2.manus.computer)
+(https://bm-food-delivery.vercel.app/)
 
 The live database has been populated with 12 restaurants, 12 categories, 80 foods, 10 coupons, 5 payment methods, 12 reviews, 3 riders, 1 notification, and an active Today's Collection containing 15 food IDs. The bootstrapped administrator is `bornilmahmud56@gmail.com`.
 
