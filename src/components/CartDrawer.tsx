@@ -60,11 +60,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onProce
         onClick={onClose}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white dark:bg-neutral-900 shadow-2xl flex flex-col border-l border-neutral-100 dark:border-neutral-800">
+      <div className="fixed inset-y-0 right-0 flex w-full max-w-full sm:w-auto sm:pl-10">
+        <div className="flex h-full w-full max-w-md flex-col border-l border-neutral-100 bg-white shadow-2xl dark:border-neutral-800 dark:bg-neutral-900">
           
           {/* Header */}
-          <div className="p-4 sm:p-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between bg-orange-50/50 dark:bg-orange-950/20">
+          <div className="flex items-center justify-between gap-3 border-b border-neutral-100 bg-orange-50/50 p-4 dark:border-neutral-800 dark:bg-orange-950/20 sm:p-6">
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-full bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 flex items-center justify-center">
                 <ShoppingBag className="w-5 h-5" />
@@ -79,7 +79,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onProce
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
               {items.length > 0 && (
                 <button
                   onClick={clearCart}
@@ -187,7 +187,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onProce
                   </div>
 
                   {!coupon ? (
-                    <div className="flex gap-2">
+                    <div className="flex min-w-0 gap-2">
                       <input
                         type="text"
                         placeholder="e.g. WELCOME50, BMFEST20"

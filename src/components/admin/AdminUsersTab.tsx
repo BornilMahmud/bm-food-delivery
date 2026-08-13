@@ -125,7 +125,7 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = ({ users, onRefresh }
       </div>
 
       {/* Users Table */}
-      <div className="overflow-x-auto">
+      <div className="bm-table-scroll">
         <table className="w-full text-left text-xs">
           <thead className="bg-neutral-50 text-neutral-500 uppercase font-bold border-b border-neutral-200">
             <tr>

@@ -1,12 +1,15 @@
-const SHELL_CACHE = 'bm-food-delivery-shell-v2';
-const SHELL_ASSETS = ['/', '/manifest.webmanifest', '/bm-food-delivery-logo.png'];
+const SHELL_CACHE = 'bm-food-delivery-shell-v3';
+const SHELL_ASSETS = ['/', '/manifest.webmanifest', '/bm-food-delivery-logo.png', '/bm-food-icon-192.png', '/bm-food-icon-512.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(SHELL_CACHE).then((cache) => cache.addAll(SHELL_ASSETS)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith('bm-food-delivery-shell-') && key !== SHELL_CACHE).map((key) => caches.delete(key))))
+      .then(() => self.clients.claim()),
+  );
 });
 
 self.addEventListener('fetch', (event) => {

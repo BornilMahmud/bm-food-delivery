@@ -344,3 +344,86 @@ select:focus-visible {
     transition-duration: .01ms !important;
   }
 }
+
+/* Mobile and installable-app safeguards */
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 320px;
+  max-width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+input,
+textarea,
+select {
+  max-width: 100%;
+}
+
+.bm-install-prompt {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 60;
+  width: min(22rem, calc(100vw - 2rem));
+  padding: .9rem;
+  border: 1px solid rgba(255, 173, 135, .32);
+  border-radius: 1.25rem;
+  background: rgba(17, 22, 27, .96);
+  box-shadow: var(--bm-shadow-deep);
+  backdrop-filter: blur(18px);
+}
+
+.bm-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bm-table-scroll > table {
+  min-width: 620px;
+}
+
+@media (max-width: 1023px) {
+  .bm-admin-content {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 639px) {
+  .bm-card {
+    border-radius: 1.125rem;
+  }
+
+  .bm-modal-backdrop {
+    align-items: flex-start;
+    padding: max(.75rem, env(safe-area-inset-top)) .75rem max(.75rem, env(safe-area-inset-bottom));
+  }
+
+  .bm-install-prompt {
+    right: max(.75rem, env(safe-area-inset-right));
+    bottom: max(.75rem, env(safe-area-inset-bottom));
+    width: min(22rem, calc(100vw - 1.5rem));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bm-install-prompt,
+  .bm-install-prompt * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

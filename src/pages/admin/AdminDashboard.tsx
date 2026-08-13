@@ -536,10 +536,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialTab }) =>
   }
 
   return (
-    <div className="bm-shell min-h-[calc(100vh-72px)] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="bm-shell mx-auto min-h-[calc(100vh-72px)] w-full min-w-0 max-w-7xl space-y-6 px-3 py-5 sm:space-y-8 sm:px-6 sm:py-8 lg:px-8">
       
       {/* Admin Title & Seed Button */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden bg-[#0b0e11] text-[var(--bm-cream)] p-6 sm:p-8 rounded-3xl border border-[var(--bm-line)] shadow-[var(--bm-shadow-deep)]">
+      <div className="relative flex min-w-0 flex-col items-start justify-between gap-4 overflow-hidden rounded-3xl border border-[var(--bm-line)] bg-[#0b0e11] p-5 text-[var(--bm-cream)] shadow-[var(--bm-shadow-deep)] sm:flex-row sm:items-center sm:p-8">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[10px] font-black uppercase bg-[var(--bm-ember)] text-[var(--bm-ink-deep)] px-2.5 py-0.5 rounded-full tracking-wider">
@@ -547,7 +547,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialTab }) =>
             </span>
             <span className="text-xs text-neutral-400 font-bold">Role: Super Admin</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">BM Food Delivery Admin Panel</h1>
+          <h1 className="break-words text-xl font-black tracking-tight sm:text-3xl">BM Food Delivery Admin Panel</h1>
           <p className="text-xs text-neutral-300 mt-1">
             Live control for orders, kitchens, riders, payments, and settings.
           </p>
@@ -571,15 +571,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialTab }) =>
         </div>
       )}
 
-      <div className={`grid min-w-0 items-start gap-6 ${navCollapsed ? 'lg:grid-cols-[74px_minmax(0,1fr)]' : 'lg:grid-cols-[240px_minmax(0,1fr)]'}`}>
-        <aside className={`bm-card min-w-0 w-full lg:self-start p-2 transition-[width] duration-300 ${navCollapsed ? 'lg:w-[74px]' : 'lg:w-[240px]'}`}>
+      <div className={`grid min-w-0 items-start gap-4 sm:gap-6 ${navCollapsed ? 'lg:grid-cols-[74px_minmax(0,1fr)]' : 'lg:grid-cols-[240px_minmax(0,1fr)]'}`}>
+        <aside className={`bm-card min-w-0 w-full p-2 transition-[width] duration-300 lg:self-start ${navCollapsed ? 'lg:w-[74px]' : 'lg:w-[240px]'}`}>
           <div className="flex items-center justify-between gap-2 border-b border-[var(--bm-line)] px-2 pb-3">
             {!navCollapsed && <span className="bm-eyebrow">Workspace</span>}
-            <button type="button" aria-label={navCollapsed ? 'Expand admin navigation' : 'Collapse admin navigation'} onClick={toggleAdminNavigation} className="bm-glass-button flex h-9 w-9 items-center justify-center rounded-xl">
+            <button type="button" aria-label={navCollapsed ? 'Expand admin navigation' : 'Collapse admin navigation'} onClick={toggleAdminNavigation} className="bm-glass-button hidden h-9 w-9 items-center justify-center rounded-xl lg:flex">
               {navCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
             </button>
           </div>
-          <nav aria-label="Admin workspace" className="mt-2 grid gap-1">
+          <nav aria-label="Admin workspace" className="mt-2 grid grid-cols-2 gap-1 sm:grid-cols-3 lg:grid-cols-1">
             {ADMIN_NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.key;
@@ -591,7 +591,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialTab }) =>
             })}
           </nav>
         </aside>
-        <div className="min-w-0 w-full space-y-6">
+        <div className="bm-admin-content min-w-0 w-full space-y-5 sm:space-y-6">
           {/* Legacy tab strip is kept hidden so deep-link/tab logic remains stable. */}
           <div className="hidden bg-white p-2 rounded-2xl border border-neutral-100 shadow-xs flex-wrap gap-2 text-xs font-bold overflow-x-auto">
         <button
@@ -808,7 +808,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialTab }) =>
             </div>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="bm-table-scroll">
             <table className="w-full text-left text-xs">
               <thead className="bg-neutral-50 text-neutral-500 uppercase font-bold border-b border-neutral-200">
                 <tr>

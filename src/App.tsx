@@ -8,6 +8,7 @@ import { OrderConfirmationModal } from './components/OrderConfirmationModal';
 import { CartDrawer } from './components/CartDrawer';
 import { AuthModal } from './components/AuthModal';
 import { FoodDetailModal } from './components/FoodDetailModal';
+import { InstallPrompt } from './components/InstallPrompt';
 import { HomePage } from './pages/HomePage';
 import { RestaurantsPage } from './pages/RestaurantsPage';
 import { RestaurantDetailPage } from './pages/RestaurantDetailPage';
@@ -218,6 +219,7 @@ export function AppContent() {
 
       {/* Footer */}
       <Footer setCurrentView={setCurrentView} />
+      <InstallPrompt />
 
     </div>
   );
